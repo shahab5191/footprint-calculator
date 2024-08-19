@@ -7,11 +7,11 @@ import useFormStore from "../lib/form-store";
 
 const ResultSide = () => {
     const { daily, annual } = useEmissionStore();
-    const { username } = useFormStore();
+    const { username, income } = useFormStore();
     return (
         <div className="col-span-4 bg-primary flex justify-center items-center">
             <div className="w-primary grid gap-2xl">
-                {username === "" ? null : (
+                {username === "" || income === 0 ? null : (
                     <>
                         <h2 className="text-foreground text-md font-extralight w-full">
                             Hi {username}
