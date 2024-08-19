@@ -2,16 +2,14 @@
 
 import Image from "next/image";
 import ResultOutput from "./result-output";
-import useEmissionStore from "../lib/emission-store";
 import useFormStore from "../lib/form-store";
 
 const ResultSide = () => {
-    const { daily, annual } = useEmissionStore();
-    const { username, income } = useFormStore();
+    const { annual, username, changed } = useFormStore();
     return (
         <div className="col-span-4 bg-primary flex justify-center items-center">
             <div className="w-primary grid gap-2xl">
-                {username === "" || income === 0 ? null : (
+                {changed || annual === undefined ? null : (
                     <>
                         <h2 className="text-foreground text-md font-extralight w-full">
                             Hi {username}
@@ -19,7 +17,7 @@ const ResultSide = () => {
                         <div className="flex flex-col gap-md">
                             <ResultOutput label="annual" amount={annual} />
                             <hr className="border-seperator w-primary" />
-                            <ResultOutput label="daily" amount={daily} />
+                            <ResultOutput label="daily" amount={annual / 360} />
                         </div>
                     </>
                 )}

@@ -1,12 +1,32 @@
-'use client'
+"use client";
 
-import { useCallback } from "react";
 import Input from "../components/input";
 import Button from "./button";
 import useFormStore from "../lib/form-store";
+import { useCallback } from "react";
 
-const SideBar = () => {
-    const { setName, setIncome } = useFormStore()
+interface PropsType {
+    fetchData: (income: number) => Promise<number | null>
+}
+
+const SideBar = (props: PropsType) => {
+    const { errors, username, income, setName, setIncome, setAnnual, resetAnnual } = useFormStore();
+
+    const calculateEmission = useCallback(
+        async (_: any) => {
+            if (errors.name !== undefined || errors.income !== undefined) {
+                return;
+            }
+    
+            const emission = await props.fetchData(income)
+            if (emission === null) {
+                resetAnnual();
+            }else{
+                setAnnual(emission)
+            }
+        },
+        [username, income]
+    );
 
     return (
         <div className="col-span-2 bg-secondary grid content-center justify-center">
@@ -14,13 +34,18 @@ const SideBar = () => {
                 <h1 className="text-foreground text-xl leading-12 font-extralight">
                     What's your carbon footprint?
                 </h1>
-                <form className="flex flex-col gap-xl">
+                <form
+                    className="flex flex-col gap-xl"
+                    action={calculateEmission}
+                >
                     <Input
+                        name="name"
                         type="text"
                         label="Name"
                         onChange={setName}
                     />
                     <Input
+                        name="income"
                         type="number"
                         label="Monthly income of household after tax"
                         onChange={setIncome}
