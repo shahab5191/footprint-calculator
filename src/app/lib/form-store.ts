@@ -9,11 +9,13 @@ interface FormStoreState {
         income?: string;
     };
     annual?: number;
-    bearerToken?: string;
+    loading: boolean;
+    token?: string;
     setAnnual: (value: number) => void;
     resetAnnual: () => void;
     setIncome: (value: string) => void;
     setName: (name: string) => void;
+    setLoading: (loading: boolean) => void;
     setToken: (token: string) => void;
 }
 
@@ -23,9 +25,11 @@ const useFormStore = create<FormStoreState>((set) => ({
     errors: {},
     annual: 0,
     changed: true,
-    bearerToken: undefined,
+    loading: false,
+    token: undefined,
 
-    setToken: (token: string) => set((state) => ({...state, bearerToken: token})),
+    setToken: (token: string) => set((state) => ({ ...state, token })),
+    setLoading: (loading: boolean) => set((state) => ({ ...state, loading })),
     resetAnnual: () => set((state) => ({ ...state, annual: undefined })),
     setIncome: (value: string) => {
         const newIncom = parseInt(value);

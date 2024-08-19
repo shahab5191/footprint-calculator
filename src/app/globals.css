@@ -36,3 +36,14 @@ body {
 .remove-arrow{
     -moz-appearance: textfield;
 }
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 50px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 8px solid #e7e7e7;
+  border-right-color: #00a6b6;
+  animation: l2 1s infinite linear;
+}
+@keyframes l2 {to{transform: rotate(1turn)}}

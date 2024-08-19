@@ -4,26 +4,40 @@ import Input from "../components/input";
 import Button from "./button";
 import useFormStore from "../lib/form-store";
 import { useCallback } from "react";
+import EmissionResponseSchema from "../lib/data-schema";
 
 interface PropsType {
-    fetchData: (income: number) => Promise<number | null>
+    fetchData: (income: number) => Promise<number | null>;
 }
 
 const SideBar = (props: PropsType) => {
-    const { errors, username, income, setName, setIncome, setAnnual, resetAnnual } = useFormStore();
+    const {
+        errors,
+        username,
+        income,
+        setName,
+        setIncome,
+        setAnnual,
+        resetAnnual,
+        setLoading,
+    } = useFormStore();
 
     const calculateEmission = useCallback(
         async (_: any) => {
             if (errors.name !== undefined || errors.income !== undefined) {
                 return;
             }
-    
-            const emission = await props.fetchData(income)
+
+            setLoading(true);
+
+            const emission = await props.fetchData(income);
             if (emission === null) {
                 resetAnnual();
-            }else{
-                setAnnual(emission)
+            } else {
+                setAnnual(emission);
             }
+
+            setLoading(false);
         },
         [username, income]
     );

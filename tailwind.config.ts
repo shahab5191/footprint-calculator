@@ -20,6 +20,7 @@ const config: Config = {
                 800: "#263238",
             },
             innerShaddow: "rgba(38,50,56,0.16)",
+            suspend: "rgba(255,255,255, 0.5)"
         },
         fontSize: {
             "2xl": "48px",

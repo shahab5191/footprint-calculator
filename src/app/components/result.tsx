@@ -5,9 +5,14 @@ import ResultOutput from "./result-output";
 import useFormStore from "../lib/form-store";
 
 const ResultSide = () => {
-    const { annual, username, changed } = useFormStore();
+    const { annual, username, changed, loading } = useFormStore();
     return (
-        <div className="col-span-4 bg-primary flex justify-center items-center">
+        <div className="col-span-4 bg-primary flex justify-center items-center relative">
+            {loading ? (
+                <div className="absolute w-full h-full flex justify-center items-center bg-suspend">
+                    <div className="loader"></div>
+                </div>
+            ) : null}
             <div className="w-primary grid gap-2xl">
                 {changed || annual === undefined ? null : (
                     <>

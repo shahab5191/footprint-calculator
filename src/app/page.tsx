@@ -21,9 +21,9 @@ export default async function Home() {
             {
                 method: "POST",
                 body,
-                headers:{
-                    "Content-Type": "application/json"
-                }
+                headers: {
+                    "Content-Type": "application/json",
+                },
             }
         );
         const data = await authenticate.json();
@@ -34,21 +34,25 @@ export default async function Home() {
         return <div>Error</div>;
     }
 
-    async function getEmmision(income: number): Promise<number | null> {
+    async function getEmission(income: number): Promise<number | null> {
         "use server";
         try {
+            const body = JSON.stringify({
+                household: {
+                    monthlyIncomeAfterTax: income,
+                },
+            });
             const response = await fetch(
                 "https://api.ducky.eco/v3/calculator?scope=individual",
                 {
                     method: "POST",
                     headers: {
                         authorization: `bearer ${token}`,
+                        "Content-Type":'application/json'
+
                     },
-                    body: JSON.stringify({
-                        household: {
-                            monthlyIncomeAfterTax: income,
-                        },
-                    }),
+                    body,
+                    cache: "no-cache"
                 }
             );
 
@@ -64,7 +68,7 @@ export default async function Home() {
 
     return (
         <main className="w-screen h-dvh grid grid-cols-6">
-            <SideBar fetchData={getEmmision} />
+            <SideBar fetchData={getEmission} />
             <ResultSide />
         </main>
     );
