@@ -112,7 +112,6 @@ const useFormStore = create<FormStoreState>((set) => ({
         }
         set((state) => ({
             ...state,
-            changed: true,
             errors: {
                 ...state.errors,
                 name: error,
