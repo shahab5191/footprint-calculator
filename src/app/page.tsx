@@ -3,6 +3,12 @@ import SideBar from "./components/side-bar";
 import AuthSchema from "./lib/auth-schema";
 import EmissionResponseSchema from "./lib/data-schema";
 
+interface GetEmissionArgs {
+    income: number;
+    adults: number;
+    children: number;
+}
+
 export default async function Home() {
     const client_id = process.env.CLIENT_ID;
     const client_secret = process.env.CLIENT_SECRET;
@@ -34,12 +40,16 @@ export default async function Home() {
         return <div>Error</div>;
     }
 
-    async function getEmission(income: number): Promise<number | null> {
+    async function getEmission(args: GetEmissionArgs): Promise<number | null> {
         "use server";
         try {
             const body = JSON.stringify({
                 household: {
-                    monthlyIncomeAfterTax: income,
+                    monthlyIncomeAfterTax: args.income,
+                    members: {
+                        adults: args.adults,
+                        children: args.children,
+                    },
                 },
             });
             const response = await fetch(
@@ -48,11 +58,10 @@ export default async function Home() {
                     method: "POST",
                     headers: {
                         authorization: `bearer ${token}`,
-                        "Content-Type":'application/json'
-
+                        "Content-Type": "application/json",
                     },
                     body,
-                    cache: "no-cache"
+                    cache: "no-cache",
                 }
             );
 

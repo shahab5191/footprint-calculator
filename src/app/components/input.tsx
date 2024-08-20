@@ -4,6 +4,7 @@ import { ChangeEvent, useCallback } from "react";
 interface PropsType<T> {
     type: T;
     name: string;
+    default: string | number;
     label?: string;
     onChange: (value: string) => void;
 }
@@ -23,6 +24,7 @@ const Input = (props: PropsType<"text" | "number">) => {
                 name={props.name}
                 type={props.type}
                 onChange={changeHandler}
+                defaultValue={props.default}
                 className={`shadow-inner shadow-innerShaddow rounded-s border-gray-200 border-solid border-[1px] w-full px-sm py-s text-sm text-gray-800 ${props.type === "number" ? "remove-arrow" : null}`}
             />
         </label>
