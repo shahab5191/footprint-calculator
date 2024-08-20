@@ -3,7 +3,7 @@ import SideBar from "./components/side-bar";
 import AuthSchema from "./lib/auth-schema";
 import EmissionResponseSchema from "./lib/data-schema";
 
-interface GetEmissionArgs {
+export interface GetEmissionArgs {
     income: number;
     adults: number;
     children: number;

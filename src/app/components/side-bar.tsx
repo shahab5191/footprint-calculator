@@ -30,7 +30,7 @@ const SideBar = (props: PropsType) => {
 
     const calculateEmission = useCallback(
         async (_: any) => {
-            if (errors.name !== undefined || errors.income !== undefined) {
+            if (errors.income !== undefined) {
                 return;
             }
 
@@ -49,25 +49,36 @@ const SideBar = (props: PropsType) => {
 
             setLoading(false);
         },
-        [username, income, adults, children]
+        [
+            income,
+            adults,
+            children,
+            errors.income,
+            resetAnnual,
+            setAnnual,
+            setLoading,
+            props,
+        ]
     );
 
     useEffect(() => {
         loadData();
-    }, []);
+    }, [loadData]);
 
     useEffect(() => {
-        clearTimeout(timer);
-        const timerId = setTimeout(() => {
-            calculateEmission(true);
-        }, 300);
-        setTimer(timerId as any);
-    }, [income, adults, children]);
+        setTimer((timer) => {
+            clearTimeout(timer);
+            const timerId = setTimeout(() => {
+                calculateEmission(true);
+            }, 300);
+            return timerId as any;
+        });
+    }, [income, adults, children, calculateEmission]);
     return (
         <div className="col-span-2 bg-secondary grid content-center justify-center">
             <div className="w-[330px] flex flex-col gap-xl">
                 <h1 className="text-foreground text-xl leading-12 font-extralight">
-                    What's your carbon footprint?
+                    What&apos;s your carbon footprint?
                 </h1>
                 <form
                     className="flex flex-col gap-s"
@@ -77,28 +88,28 @@ const SideBar = (props: PropsType) => {
                         name="name"
                         type="text"
                         label="Name"
-                        default={username}
+                        defaultInput={username}
                         onChange={setName}
                     />
                     <Input
                         name="income"
                         type="number"
                         label="Monthly income of household after tax"
-                        default={income}
+                        defaultInput={income}
                         onChange={setIncome}
                     />
                     <Input
                         name="adults"
                         type="number"
                         label="Number of adults"
-                        default={adults}
+                        defaultInput={adults}
                         onChange={setAdults}
                     />
                     <Input
                         name="children"
                         type="number"
                         label="Number of childrens"
-                        default={children}
+                        defaultInput={children}
                         onChange={setChildren}
                     />
                     <Button>Calculate Footprint</Button>
