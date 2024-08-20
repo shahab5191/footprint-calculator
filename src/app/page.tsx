@@ -37,7 +37,13 @@ export default async function Home() {
 
         token = parsedResponse.access_token;
     } catch (error) {
-        return <div>Error</div>;
+        console.error("Error while fetching token", error);
+        return (
+            <div className="flex h-dvh w-full flex-col justify-center items-center">
+                <h1 className="font-bold text-2xl">Error happend!</h1>
+                <p>Somthing went wrong communicating with Ducky server!</p>
+            </div>
+        );
     }
 
     async function getEmission(args: GetEmissionArgs): Promise<number | null> {
