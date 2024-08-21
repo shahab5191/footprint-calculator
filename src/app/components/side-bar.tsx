@@ -102,6 +102,7 @@ const SideBar = (props: PropsType) => {
                         label="Monthly income of household after tax"
                         defaultInput={income}
                         onChange={setIncome}
+                        min={0}
                     />
                     <Input
                         name="adults"
@@ -109,6 +110,7 @@ const SideBar = (props: PropsType) => {
                         label="Number of adults"
                         defaultInput={adults}
                         onChange={setAdults}
+                        min={1}
                     />
                     <Input
                         name="children"
@@ -116,6 +118,7 @@ const SideBar = (props: PropsType) => {
                         label="Number of childrens"
                         defaultInput={children}
                         onChange={setChildren}
+                        min={0}
                     />
                     <Button>Calculate Footprint</Button>
                 </form>
