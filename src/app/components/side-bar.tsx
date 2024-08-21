@@ -58,7 +58,6 @@ const SideBar = (props: PropsType) => {
             adults,
             children,
             errors.income,
-            changed,
             firstRun,
             resetAnnual,
             setAnnual,
