@@ -46,7 +46,7 @@ export default async function Home() {
         );
     }
 
-    async function getEmission(args: GetEmissionArgs): Promise<number | null> {
+    async function getEmission(args: GetEmissionArgs): Promise<number | string> {
         "use server";
         let data: any;
         try {
@@ -72,12 +72,17 @@ export default async function Home() {
                 }
             );
             if(!response.ok){
-                throw Error(response.statusText)
+                throw Error(`[${response.status}]: ${response.statusText}`)
             }
             data = await response.json();
         } catch (error) {
-            console.error("Error fetching data:", error);
-            return null;
+            if (error instanceof Error){
+                console.error("Error fetching data:", error.message);
+                return error.message;
+            }else{
+                console.error(error)
+                return "Unexpected error!"
+            }
         }
 
         try {
@@ -85,7 +90,7 @@ export default async function Home() {
             return parsedData.totalCo2Kg;
         } catch (error) {
             console.error("Error validating data", error);
-            return null;
+            return "Input fields are not valid!";
         }
     }
 

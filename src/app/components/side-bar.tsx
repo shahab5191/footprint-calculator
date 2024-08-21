@@ -1,4 +1,6 @@
 "use client";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 
 import Input from "../components/input";
 import Button from "./button";
@@ -7,17 +9,18 @@ import { useCallback, useEffect } from "react";
 import { GetEmissionArgs } from "../page";
 
 interface PropsType {
-    fetchData: (args: GetEmissionArgs) => Promise<number | null>;
+    fetchData: (args: GetEmissionArgs) => Promise<number | string>;
 }
 
 const SideBar = (props: PropsType) => {
+    const notify = (text: string) => toast(text, { type: "error" });
+
     const {
         errors,
         username,
         income,
         adults,
         children,
-        changed,
         firstRun,
         setName,
         setIncome,
@@ -31,8 +34,8 @@ const SideBar = (props: PropsType) => {
 
     const calculateEmission = useCallback(
         async (_: any) => {
-            if (firstRun){
-                return
+            if (firstRun) {
+                return;
             }
             if (errors.income !== undefined) {
                 return;
@@ -45,10 +48,12 @@ const SideBar = (props: PropsType) => {
                 adults,
                 children,
             });
-            if (emission === null) {
-                resetAnnual();
-            } else {
+
+            if (typeof emission === "number") {
                 setAnnual(emission);
+            } else {
+                notify(emission);
+                resetAnnual();
             }
 
             setLoading(false);
@@ -71,15 +76,16 @@ const SideBar = (props: PropsType) => {
     }, [loadData]);
 
     useEffect(() => {
-        const timerId = setTimeout(()=>{
+        const timerId = setTimeout(() => {
             calculateEmission(true);
         }, 500);
 
-        return () => clearTimeout(timerId)
+        return () => clearTimeout(timerId);
     }, [income, adults, children, calculateEmission]);
 
     return (
         <div className="col-span-2 bg-secondary grid content-center justify-center">
+            <ToastContainer />
             <div className="w-[330px] flex flex-col gap-xl">
                 <h1 className="text-foreground text-xl leading-12 font-extralight">
                     What&apos;s your carbon footprint?
