@@ -47,16 +47,24 @@ const useFormStore = create<FormStoreState>((set) => ({
             error = "Income must be a valid numbers";
             income = 0;
         }
-        set((state) => ({
-            ...state,
-            changed: true,
-            errors: {
-                ...state.errors,
-                income: error,
-            },
-            income,
-        }));
-        saveField("income", String(income));
+        set((state) => {
+            saveAllFields({
+                income,
+                adults: state.adults,
+                children: state.children,
+                username: state.username,
+                annual: state.annual
+            });
+            return {
+                ...state,
+                changed: true,
+                errors: {
+                    ...state.errors,
+                    income: error,
+                },
+                income,
+            };
+        });
     },
     setAdults: (value: string) => {
         let newNumber = parseInt(value);
@@ -65,9 +73,7 @@ const useFormStore = create<FormStoreState>((set) => ({
             error = "Adults number be a valid numbers";
             newNumber = 1;
         }
-        if (newNumber < 1) {
-            newNumber = 1;
-        }
+
         set((state) => ({
             ...state,
             changed: true,
@@ -85,10 +91,6 @@ const useFormStore = create<FormStoreState>((set) => ({
 
         if (isNaN(newNumber)) {
             error = "Children number be a valid numbers";
-            newNumber = 0;
-        }
-
-        if (newNumber < 0) {
             newNumber = 0;
         }
 
@@ -147,6 +149,28 @@ const useFormStore = create<FormStoreState>((set) => ({
         }));
     },
 }));
+
+interface SaveAllFieldsArgs {
+    username: string;
+    income: number;
+    adults: number;
+    children: number;
+    annual?: number;
+}
+
+const saveAllFields = ({
+    income,
+    adults,
+    children,
+    username,
+    annual,
+}: SaveAllFieldsArgs) => {
+    saveField("income", String(income));
+    saveField("adults", String(adults));
+    saveField("children", String(children));
+    saveField("annual", String(annual));
+    saveField("name", username);
+};
 
 const saveField = (fieldName: string, value: string) => {
     if (fieldName.trim() === "") {
