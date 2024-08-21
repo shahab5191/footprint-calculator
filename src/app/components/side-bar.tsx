@@ -11,7 +11,6 @@ interface PropsType {
 }
 
 const SideBar = (props: PropsType) => {
-    const [timer, setTimer] = useState<number>();
     const {
         errors,
         username,
@@ -37,6 +36,7 @@ const SideBar = (props: PropsType) => {
             setLoading(true);
 
             const emission = await props.fetchData({
+                username,
                 income,
                 adults,
                 children,
@@ -66,14 +66,13 @@ const SideBar = (props: PropsType) => {
     }, [loadData]);
 
     useEffect(() => {
-        setTimer((timer) => {
-            clearTimeout(timer);
-            const timerId = setTimeout(() => {
-                calculateEmission(true);
-            }, 300);
-            return timerId as any;
-        });
+        const timerId = setTimeout(()=>{
+            calculateEmission(true);
+        }, 500);
+
+        return () => clearTimeout(timerId)
     }, [income, adults, children, calculateEmission]);
+
     return (
         <div className="col-span-2 bg-secondary grid content-center justify-center">
             <div className="w-[330px] flex flex-col gap-xl">
