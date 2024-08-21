@@ -27,3 +27,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Technical debts
 You can read about the technical debts and current state of the project [here](t-debt.md)
+
+## Author
+Shahab Oveysi
+[oveysi.shahab@gmail.com](mailto:oveysi.shahab@gmail.com)
