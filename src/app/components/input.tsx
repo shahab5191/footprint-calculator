@@ -10,6 +10,7 @@ interface PropsType {
     max?: number;
     onChange: (value: string) => void;
 }
+
 const Input = (props: PropsType) => {
     const {type, name, defaultInput, label, min, max, onChange} = props;
     const [value, setValue] = useState<number | string>(defaultInput)
