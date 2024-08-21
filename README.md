@@ -6,12 +6,22 @@ You can find a live version of this project deployed on vercel:
 [Live Preview](https://footprint-calculator-blond.vercel.app/)
 
 ## Getting Started
-First, install dependencies:
+First clone repository on you computer
+```bash
+git clone https://github.com/shahab5191/footprint-calculator
+```
+Then, install dependencies:
 ```bash
 npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun dev
 ```
 
-Then run the development server:
+Finally run the development server:
 
 ```bash
 npm run dev
