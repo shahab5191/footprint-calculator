@@ -15,6 +15,7 @@ interface FormStoreState {
     annual?: number;
     loading: boolean;
     token?: string;
+    firstRun: boolean;
     setAnnual: (value: number) => void;
     resetAnnual: () => void;
     setIncome: (value: string) => void;
@@ -36,6 +37,7 @@ const useFormStore = create<FormStoreState>((set) => ({
     changed: true,
     loading: false,
     token: undefined,
+    firstRun: true,
 
     setToken: (token: string) => set((state) => ({ ...state, token })),
     setLoading: (loading: boolean) => set((state) => ({ ...state, loading })),
@@ -47,16 +49,25 @@ const useFormStore = create<FormStoreState>((set) => ({
             error = "Income must be a valid numbers";
             income = 0;
         }
-        set((state) => ({
-            ...state,
-            changed: true,
-            errors: {
-                ...state.errors,
-                income: error,
-            },
-            income,
-        }));
-        saveField("income", String(income));
+        set((state) => {
+            saveAllFields({
+                income,
+                adults: state.adults,
+                children: state.children,
+                username: state.username,
+                annual: state.annual,
+            });
+            return {
+                ...state,
+                changed: true,
+                errors: {
+                    ...state.errors,
+                    income: error,
+                },
+                income,
+                firstRun: false
+            };
+        });
     },
     setAdults: (value: string) => {
         let newNumber = parseInt(value);
@@ -65,19 +76,26 @@ const useFormStore = create<FormStoreState>((set) => ({
             error = "Adults number be a valid numbers";
             newNumber = 1;
         }
-        if (newNumber < 1) {
-            newNumber = 1;
-        }
-        set((state) => ({
-            ...state,
-            changed: true,
-            errors: {
-                ...state.errors,
-                adults: error,
-            },
-            adults: newNumber,
-        }));
-        saveField("adults", String(newNumber));
+
+        set((state) => {
+            saveAllFields({
+                income: state.income,
+                adults: newNumber,
+                children: state.children,
+                username: state.username,
+                annual: state.annual,
+            });
+            return {
+                ...state,
+                changed: true,
+                errors: {
+                    ...state.errors,
+                    adults: error,
+                },
+                adults: newNumber,
+                firstRun: false
+            };
+        });
     },
     setChildren: (value: string) => {
         let newNumber = parseInt(value);
@@ -88,21 +106,27 @@ const useFormStore = create<FormStoreState>((set) => ({
             newNumber = 0;
         }
 
-        if (newNumber < 0) {
-            newNumber = 0;
-        }
-
-        set((state) => ({
-            ...state,
-            changed: true,
-            errors: {
-                ...state.errors,
-                children: error,
-            },
-            children: newNumber,
-        }));
-        saveField("children", String(newNumber));
+        set((state) => {
+            saveAllFields({
+                income: state.income,
+                adults: state.adults,
+                children: newNumber,
+                username: state.username,
+                annual: state.annual,
+            });
+            return {
+                ...state,
+                changed: true,
+                errors: {
+                    ...state.errors,
+                    children: error,
+                },
+                children: newNumber,
+                firstRun:false
+            };
+        });
     },
+
     setName: (name: string) => {
         let newName = name;
         let error: string | undefined;
@@ -110,19 +134,36 @@ const useFormStore = create<FormStoreState>((set) => ({
             error = "Name must be between 3 and 24 characters.";
             newName = "";
         }
-        set((state) => ({
-            ...state,
-            errors: {
-                ...state.errors,
-                name: error,
-            },
-            username: newName,
-        }));
-        saveField("name", newName);
+        set((state) => {
+            saveAllFields({
+                income: state.income,
+                adults: state.adults,
+                children: state.children,
+                username: newName,
+                annual: state.annual,
+            });
+            return {
+                ...state,
+                errors: {
+                    ...state.errors,
+                    name: error,
+                },
+                username: newName,
+                firstRun: false
+            };
+        });
     },
     setAnnual: (value: number) => {
-        set((state) => ({ ...state, changed: false, annual: value }));
-        saveField("annual", String(value));
+        set((state) => {
+            saveAllFields({
+                income: state.income,
+                adults: state.adults,
+                children: state.children,
+                username: state.username,
+                annual: value,
+            });
+            return { ...state, changed: false, annual: value };
+        });
     },
     loadData: () => {
         const username = loadField("name");
@@ -147,6 +188,28 @@ const useFormStore = create<FormStoreState>((set) => ({
         }));
     },
 }));
+
+interface SaveAllFieldsArgs {
+    username: string;
+    income: number;
+    adults: number;
+    children: number;
+    annual?: number;
+}
+
+const saveAllFields = ({
+    income,
+    adults,
+    children,
+    username,
+    annual,
+}: SaveAllFieldsArgs) => {
+    saveField("income", String(income));
+    saveField("adults", String(adults));
+    saveField("children", String(children));
+    saveField("annual", String(annual));
+    saveField("name", username);
+};
 
 const saveField = (fieldName: string, value: string) => {
     if (fieldName.trim() === "") {

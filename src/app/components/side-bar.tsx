@@ -3,7 +3,7 @@
 import Input from "../components/input";
 import Button from "./button";
 import useFormStore from "../lib/form-store";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { GetEmissionArgs } from "../page";
 
 interface PropsType {
@@ -11,13 +11,14 @@ interface PropsType {
 }
 
 const SideBar = (props: PropsType) => {
-    const [timer, setTimer] = useState<number>();
     const {
         errors,
         username,
         income,
         adults,
         children,
+        changed,
+        firstRun,
         setName,
         setIncome,
         setAnnual,
@@ -30,6 +31,9 @@ const SideBar = (props: PropsType) => {
 
     const calculateEmission = useCallback(
         async (_: any) => {
+            if (firstRun){
+                return
+            }
             if (errors.income !== undefined) {
                 return;
             }
@@ -54,6 +58,8 @@ const SideBar = (props: PropsType) => {
             adults,
             children,
             errors.income,
+            changed,
+            firstRun,
             resetAnnual,
             setAnnual,
             setLoading,
@@ -66,14 +72,13 @@ const SideBar = (props: PropsType) => {
     }, [loadData]);
 
     useEffect(() => {
-        setTimer((timer) => {
-            clearTimeout(timer);
-            const timerId = setTimeout(() => {
-                calculateEmission(true);
-            }, 300);
-            return timerId as any;
-        });
+        const timerId = setTimeout(()=>{
+            calculateEmission(true);
+        }, 500);
+
+        return () => clearTimeout(timerId)
     }, [income, adults, children, calculateEmission]);
+
     return (
         <div className="col-span-2 bg-secondary grid content-center justify-center">
             <div className="w-[330px] flex flex-col gap-xl">

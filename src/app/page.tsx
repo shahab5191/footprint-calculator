@@ -48,6 +48,7 @@ export default async function Home() {
 
     async function getEmission(args: GetEmissionArgs): Promise<number | null> {
         "use server";
+        let data: any;
         try {
             const body = JSON.stringify({
                 household: {
@@ -70,13 +71,20 @@ export default async function Home() {
                     cache: "no-cache",
                 }
             );
-
-            const data = await response.json();
-            const parsedData = EmissionResponseSchema.parse(data);
-
-            return parsedData.totalCo2Kg;
+            if(!response.ok){
+                throw Error(response.statusText)
+            }
+            data = await response.json();
         } catch (error) {
             console.error("Error fetching data:", error);
+            return null;
+        }
+
+        try {
+            const parsedData = EmissionResponseSchema.parse(data);
+            return parsedData.totalCo2Kg;
+        } catch (error) {
+            console.error("Error validating data", error);
             return null;
         }
     }
