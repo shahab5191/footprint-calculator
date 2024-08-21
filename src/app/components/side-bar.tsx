@@ -3,7 +3,7 @@
 import Input from "../components/input";
 import Button from "./button";
 import useFormStore from "../lib/form-store";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { GetEmissionArgs } from "../page";
 
 interface PropsType {
@@ -17,6 +17,8 @@ const SideBar = (props: PropsType) => {
         income,
         adults,
         children,
+        changed,
+        firstRun,
         setName,
         setIncome,
         setAnnual,
@@ -29,6 +31,9 @@ const SideBar = (props: PropsType) => {
 
     const calculateEmission = useCallback(
         async (_: any) => {
+            if (firstRun){
+                return
+            }
             if (errors.income !== undefined) {
                 return;
             }
@@ -36,7 +41,6 @@ const SideBar = (props: PropsType) => {
             setLoading(true);
 
             const emission = await props.fetchData({
-                username,
                 income,
                 adults,
                 children,
@@ -54,6 +58,8 @@ const SideBar = (props: PropsType) => {
             adults,
             children,
             errors.income,
+            changed,
+            firstRun,
             resetAnnual,
             setAnnual,
             setLoading,

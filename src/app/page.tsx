@@ -4,7 +4,6 @@ import AuthSchema from "./lib/auth-schema";
 import EmissionResponseSchema from "./lib/data-schema";
 
 export interface GetEmissionArgs {
-    username: string;
     income: number;
     adults: number;
     children: number;
@@ -49,7 +48,6 @@ export default async function Home() {
 
     async function getEmission(args: GetEmissionArgs): Promise<number | null> {
         "use server";
-        if (args.username === "") return null;
         let data: any;
         try {
             const body = JSON.stringify({

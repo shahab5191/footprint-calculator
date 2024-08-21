@@ -15,6 +15,7 @@ interface FormStoreState {
     annual?: number;
     loading: boolean;
     token?: string;
+    firstRun: boolean;
     setAnnual: (value: number) => void;
     resetAnnual: () => void;
     setIncome: (value: string) => void;
@@ -36,6 +37,7 @@ const useFormStore = create<FormStoreState>((set) => ({
     changed: true,
     loading: false,
     token: undefined,
+    firstRun: true,
 
     setToken: (token: string) => set((state) => ({ ...state, token })),
     setLoading: (loading: boolean) => set((state) => ({ ...state, loading })),
@@ -53,7 +55,7 @@ const useFormStore = create<FormStoreState>((set) => ({
                 adults: state.adults,
                 children: state.children,
                 username: state.username,
-                annual: state.annual
+                annual: state.annual,
             });
             return {
                 ...state,
@@ -63,6 +65,7 @@ const useFormStore = create<FormStoreState>((set) => ({
                     income: error,
                 },
                 income,
+                firstRun: false
             };
         });
     },
@@ -74,16 +77,25 @@ const useFormStore = create<FormStoreState>((set) => ({
             newNumber = 1;
         }
 
-        set((state) => ({
-            ...state,
-            changed: true,
-            errors: {
-                ...state.errors,
-                adults: error,
-            },
-            adults: newNumber,
-        }));
-        saveField("adults", String(newNumber));
+        set((state) => {
+            saveAllFields({
+                income: state.income,
+                adults: newNumber,
+                children: state.children,
+                username: state.username,
+                annual: state.annual,
+            });
+            return {
+                ...state,
+                changed: true,
+                errors: {
+                    ...state.errors,
+                    adults: error,
+                },
+                adults: newNumber,
+                firstRun: false
+            };
+        });
     },
     setChildren: (value: string) => {
         let newNumber = parseInt(value);
@@ -94,17 +106,27 @@ const useFormStore = create<FormStoreState>((set) => ({
             newNumber = 0;
         }
 
-        set((state) => ({
-            ...state,
-            changed: true,
-            errors: {
-                ...state.errors,
-                children: error,
-            },
-            children: newNumber,
-        }));
-        saveField("children", String(newNumber));
+        set((state) => {
+            saveAllFields({
+                income: state.income,
+                adults: state.adults,
+                children: newNumber,
+                username: state.username,
+                annual: state.annual,
+            });
+            return {
+                ...state,
+                changed: true,
+                errors: {
+                    ...state.errors,
+                    children: error,
+                },
+                children: newNumber,
+                firstRun:false
+            };
+        });
     },
+
     setName: (name: string) => {
         let newName = name;
         let error: string | undefined;
@@ -112,19 +134,36 @@ const useFormStore = create<FormStoreState>((set) => ({
             error = "Name must be between 3 and 24 characters.";
             newName = "";
         }
-        set((state) => ({
-            ...state,
-            errors: {
-                ...state.errors,
-                name: error,
-            },
-            username: newName,
-        }));
-        saveField("name", newName);
+        set((state) => {
+            saveAllFields({
+                income: state.income,
+                adults: state.adults,
+                children: state.children,
+                username: newName,
+                annual: state.annual,
+            });
+            return {
+                ...state,
+                errors: {
+                    ...state.errors,
+                    name: error,
+                },
+                username: newName,
+                firstRun: false
+            };
+        });
     },
     setAnnual: (value: number) => {
-        set((state) => ({ ...state, changed: false, annual: value }));
-        saveField("annual", String(value));
+        set((state) => {
+            saveAllFields({
+                income: state.income,
+                adults: state.adults,
+                children: state.children,
+                username: state.username,
+                annual: value,
+            });
+            return { ...state, changed: false, annual: value };
+        });
     },
     loadData: () => {
         const username = loadField("name");
