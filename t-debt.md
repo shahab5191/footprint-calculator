@@ -21,3 +21,6 @@ Due to the limited deadline, I aimed to minimize technical debt, but some areas 
 5- Modularization of Emission Calculation
 
 - The calculateEmission function should be moved to a separate module. Instead of being called directly inside the SideBar function, it should listen to state changes, promoting a more reactive and decoupled design.
+
+6- This app is not responsive yet
+- The project only works well with widescreen monitors and is not yet suitable for browsing on smaller screens like mobile
